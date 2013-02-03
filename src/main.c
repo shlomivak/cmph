@@ -374,7 +374,7 @@ int main(int argc, char **argv)
     if (!getline(&key, &len, stdin)){
       break;
     }
-    key[strlen(key)] = NULL;
+    key[strlen(key)-1] = NULL;
     //        timeval stop, start;
     //  gettimeofday(&start, NULL);
 
