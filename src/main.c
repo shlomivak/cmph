@@ -377,7 +377,7 @@ int main(int argc, char **argv)
     //        timeval stop, start;
     //  gettimeofday(&start, NULL);
 
-    unsigned int code1 = cmph_search(map1, key, (cmph_uint32) len);
+    unsigned int code1 = cmph_search(map1, key, (cmph_uint32) strlen(key)));
     //    unsigned int code2 = cmph_search(map2, key, (cmph_uint32) len);
 
     //    if (code1 != code2 ){
@@ -387,7 +387,7 @@ int main(int argc, char **argv)
     //    } else {
       //          gettimeofday(&stop, NULL);
       //          cout << "FOUND ("<<(stop.tv_usec - start.tv_usec)<<" micros): " << code1 << endl;
-      printf("FOUND : %d\n", code1);
+  printf("FOUND '%s' : %d\n", key, code1);
       //    }
 
   }
