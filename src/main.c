@@ -354,18 +354,18 @@ int main(int argc, char **argv)
 
 
   FILE *first_map  = fopen("perfect2.2.mph","r");
-  FILE *second_map = fopen("perfect2.mph","r");
+  //  FILE *second_map = fopen("perfect2.mph","r");
 
-  if (first_map == NULL || second_map == NULL) {
+  if (first_map == NULL){// || second_map == NULL) {
     printf("shit!\n");
     return -1;
   }
 
   cmph_t *map1 = cmph_load(first_map);
-  cmph_t *map2 = cmph_load(second_map);
+  //  cmph_t *map2 = cmph_load(second_map);
 
   fclose(first_map);
-  fclose(second_map);
+  //  fclose(second_map);
 
   char *key = NULL;
   size_t len=0;
@@ -378,23 +378,23 @@ int main(int argc, char **argv)
     //  gettimeofday(&start, NULL);
 
     unsigned int code1 = cmph_search(map1, key, (cmph_uint32) len);
-    unsigned int code2 = cmph_search(map2, key, (cmph_uint32) len);
+    //    unsigned int code2 = cmph_search(map2, key, (cmph_uint32) len);
 
-    if (code1 != code2 ){
+    //    if (code1 != code2 ){
       //    gettimeofday(&stop, NULL);
       //          cout << "NOTFOUND ("<<(stop.tv_usec - start.tv_usec)<<" micros): " << endl;
-      printf ("NOTFOUND\n");
-    } else {
+    //      printf ("NOTFOUND\n");
+    //    } else {
       //          gettimeofday(&stop, NULL);
       //          cout << "FOUND ("<<(stop.tv_usec - start.tv_usec)<<" micros): " << code1 << endl;
       printf("FOUND : %d\n", code1);
-    }
+      //    }
 
   }
 
 
   cmph_destroy(map1);
-  cmph_destroy(map2);
+  //  cmph_destroy(map2);
   return 0;
 
 }
