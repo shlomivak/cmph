@@ -10,8 +10,14 @@
 #include <time.h>
 #include <limits.h>
 #include <assert.h>
+#include <stdlib.h>
+#include <sys/time.h>
+#include <unistd.h>
+
 #include "cmph.h"
 #include "hash.h"
+
+
 
 #ifdef WIN32
 #define VERSION "0.8"
@@ -345,57 +351,50 @@ int main1(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
-  char *mphf_file = NULL;
-  cmph_t *mphf = NULL;
-  cmph_t *mphf2 = NULL;
-  FILE *mphf_fd = stdout;
 
-  strcpy(mphf_file, "perfect2.2mph");
-  mphf_fd = fopen(mphf_file, "r");
-  if (mphf_fd == NULL)
-    {
-      fprintf(stderr, "Unable to open input file %s: %s\n", mphf_file, strerror(errno));
-      //      free(mphf_file);
-      return -1;
+
+  FILE *first_map  = fopen("perfect2.2.mph","r");
+  FILE *second_map = fopen("perfect2.mph","r");
+
+  if (first_map == NULL || second_map == NULL) {
+    printf("shit!\n");
+    return -1;
+  }
+
+  cmph_t *map1 = cmph_load(first_map);
+  cmph_t *map2 = cmph_load(second_map);
+
+  fclose(first_map);
+  fclose(second_map);
+
+  char *key = NULL;
+  size_t len=0;
+  for (;;){
+    printf(">");
+    if (!getline(&key, &len, stdin)){
+      break;
     }
-  mphf = cmph_load(mphf_fd);
-  fclose(mphf_fd);
+    //        timeval stop, start;
+    //  gettimeofday(&start, NULL);
 
-  strcpy(mphf_file, "perfect2.mph");
-  mphf_fd = fopen(mphf_file, "r");
-  if (mphf_fd == NULL)
-    {
-      fprintf(stderr, "Unable to open input file %s: %s\n", mphf_file, strerror(errno));
-      //      free(mphf_file);
-      return -1;
-    }
-  mphf2 = cmph_load(mphf_fd);
-  fclose(mphf_fd);
+    unsigned int code1 = cmph_search(map1, key, (cmph_uint32) len);
+    unsigned int code2 = cmph_search(map2, key, (cmph_uint32) len);
 
-  if (!mphf )
-    {
-      fprintf(stderr, "Unable to parser input file %s\n", mphf_file);
-      //                free(mphf_file);
-      return -1;
-    }
-
-  if (!mphf2 )
-    {
-      fprintf(stderr, "Unable to parser other input file %s\n", mphf_file);
-      //                free(mphf_file);
-      return -1;
+    if (code1 != code2 ){
+      //    gettimeofday(&stop, NULL);
+      //          cout << "NOTFOUND ("<<(stop.tv_usec - start.tv_usec)<<" micros): " << endl;
+      printf ("NOTFOUND\n");
+    } else {
+      //          gettimeofday(&stop, NULL);
+      //          cout << "FOUND ("<<(stop.tv_usec - start.tv_usec)<<" micros): " << code1 << endl;
+      printf("FOUND : %d\n", code1);
     }
 
-  cmph_uint32 h1;
-  cmph_uint32 h2;
+  }
 
-  h1 = cmph_search(mphf, "ass", strlen("ass"));
-  h2 = cmph_search(mphf2, "ass", strlen("ass"));
 
-  printf("%s -> %u, %u\n", "ass", h1, h2);
-
-  cmph_destroy(mphf);
-  cmph_destroy(mphf2);
+  cmph_destroy(map1);
+  cmph_destroy(map2);
   return 0;
 
 }
